@@ -50,7 +50,7 @@ describe('POST /todos', () => {
                 Todo.find().then((todos) => {
                     expect(todos.length).toBe(0); // no todo should be created
                     done();
-                }).catch((e) => done(e));
+                }).catch((e) => done(e)); // catch error
             });
     });
 })
