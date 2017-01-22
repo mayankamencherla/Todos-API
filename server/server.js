@@ -8,6 +8,7 @@ var {User} = require('./models/user');
 var {ObjectID} = require('mongodb');
 
 var app = express();
+const port = process.env.PORT || 3000; // PORT if on production, 3000 locally
 
 app.use(bodyParser.json()); // middleware for express
 
@@ -59,8 +60,8 @@ app.get('/todos/:id', (req, res) => {
 
 /*----------------------- All routes end----------------------------------*/
 
-app.listen(3000, () => {
-  console.log('Started on port 3000');
+app.listen(port, () => {
+  console.log(`Started on port ${port}`);
 });
 
 // exporting app for tests
