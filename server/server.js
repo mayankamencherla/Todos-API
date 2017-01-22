@@ -39,14 +39,19 @@ app.get('/todos', (req, res) => {
 // req params contains the params passed into the request
 app.get('/todos/:id', (req, res) => {
 
-    var id = req.params.id; // getting the id from the dynamic url
+    // getting the id from the dynamic url
+    var id = req.params.id; 
 
     if (!ObjectID.isValid(id)){
-        res.send(404).send();
+        return res.send(404).send();
     }
 
     Todo.findById(id).then((todo) => {
-        res.send(todo);
+        if (!todo){
+            return res.send(404).send();
+        }
+        
+        res.send({todo});
     }, (e) => {
         res.send(400).send(e);
     });
