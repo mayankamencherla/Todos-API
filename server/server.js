@@ -10,6 +10,7 @@ const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
 const {ObjectID} = require('mongodb');
+const {authenticate} = require('./middleware/authenticate');
 
 const app = express();
 const port = process.env.PORT; // PORT if on production, 3000 locally
@@ -126,6 +127,11 @@ app.post('/users', (req, res) => {
     }).catch((e) => {
         res.status(400).send(e);
     })
+});
+
+// private auth for user/me -> to get back the user
+app.get('/users/me', authenticate, (req, res) => {
+    res.send(req.user); // set in authenticate
 });
 
 // get all users signed up

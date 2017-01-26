@@ -48,7 +48,7 @@ UserSchema.methods.toJSON = function (){
 };
 
 // Adding a method to the schema
-UserSchema.methods.generateAuthToken = function() {
+UserSchema.methods.generateAuthToken = function (){
     var user = this; // accessing the doc that calls the method
 
     // specifying access and creating token
@@ -61,6 +61,26 @@ UserSchema.methods.generateAuthToken = function() {
     // saving user and returning so that server.js can use this in the chained promise
     return user.save().then(() => {
         return token;
+    });
+};
+
+// Find user by token -> Using statics
+UserSchema.statics.findByToken = function (token){
+    var User = this; // model method, so this = User
+    var decoded;
+
+    try{
+        decoded = jwt.verify(token, 'abc123');
+    } catch (e) {
+        return Promise.reject(); // returning a reject promise if jwt.verify fails
+    }
+
+    // syntax to get a property in an array (when there is a dot in the value)
+    // Can be used otherwise as well, returning a promise
+    return User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token, 
+        'tokens.access': 'auth'
     });
 };
 
