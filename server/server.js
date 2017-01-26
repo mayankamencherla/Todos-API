@@ -16,7 +16,7 @@ const port = process.env.PORT; // PORT if on production, 3000 locally
 
 app.use(bodyParser.json()); // middleware for express
 
-/*----------------------- All routes start----------------------------------*/
+/*----------------------- All todos routes start----------------------------------*/
 // Create a new todo and save
 app.post('/todos', (req, res) => {
 
@@ -110,7 +110,27 @@ app.patch('/todos/:id', (req, res) => {
     }); 
 });
 
-/*----------------------- All routes end----------------------------------*/
+/*----------------------- All todos routes end----------------------------------*/
+/*----------------------- All user routes start----------------------------------*/
+
+// sign up a new user
+app.post('/users', (req, res) => {
+    // new user object
+    var body = _.pick(req.body, ['email', 'password']);
+    var user = new User(body);
+
+    user.save().then((usr) => {
+        return user.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).send(user); // custom header called auth
+    }).catch((e) => {
+        res.status(400).send(e);
+    })
+});
+
+// get all users signed up
+
+/*----------------------- All user routes end----------------------------------*/
 
 app.listen(port, () => {
   console.log(`Started on port ${port}`);
