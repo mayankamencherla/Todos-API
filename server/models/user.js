@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 /*-----------------------------------------------------------------------------*/
 /* 
@@ -83,6 +84,24 @@ UserSchema.statics.findByToken = function (token){
         'tokens.access': 'auth'
     });
 };
+
+// Adding a save event before we save the doc to the database
+// Need next , and need to call it inside the function
+UserSchema.pre('save', function (next){
+    var user = this;
+
+    // returns true if password is modified
+    if (user.isModified('password')){
+        bcrypt.genSalt(10, (err, salt) =>{
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                user.password = hash; 
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+});
 
 // Creating User model and associating UserSchema 
 var User = mongoose.model('User', UserSchema);
