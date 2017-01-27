@@ -11,6 +11,7 @@ const {Todo}         = require('./models/todo');
 const {User}         = require('./models/user');
 const {ObjectID}     = require('mongodb');
 const {authenticate} = require('./middleware/authenticate');
+const bcrypt         = require('bcryptjs');
 
 const app = express();
 const port = process.env.PORT; // PORT if on production, 3000 locally
@@ -135,7 +136,19 @@ app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user); // set in authenticate
 });
 
-// get all users signed up
+// sign in a user, password = hashed password in db
+// authenticate not needed because users signed up already authenticated
+app.post('/users/login', (req, res) =>{
+    var body = _.pick(req.body, ['email', 'password']);
+
+    User.findByCredentials(body.email, body.password).then((user) => {
+        return user.generateAuthToken().then((token) => {
+            res.header('x-auth', token).send(user); // custom header called auth
+        });
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+});
 
 /*----------------------- All user routes end----------------------------------*/
 
