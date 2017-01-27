@@ -191,9 +191,9 @@ describe('POST /users', () =>{
             .expect((res) => {
                 expect(res.headers['x-auth']).toExist();
                 expect(res.body._id).toExist();
-                expect(res.body.email).toBe('example@example.com');
+                expect(res.body.email).toBe(email);
             })
-            .end((err) => {
+            .end((err, res) => {
                 if (err){
                     return done(err);
                 }
@@ -202,8 +202,8 @@ describe('POST /users', () =>{
                 User.findOne({email}).then((user) => {
                     expect(user).toExist();
                     expect(user.password).toNotBe(password);
-                });
-                done();
+                    done();
+                }).catch((e) => done(e));
             });
     });
 
@@ -251,5 +251,60 @@ describe('GET /users/me', () => {
                 expect(res.body).toEqual({});
             })
             .end(done);
+    });
+});
+
+describe('POST /users/login', () => {
+    // check for already signed up user in db
+    it('should login user and return auth token', (done) => {
+        request(app)
+            .post('/users/login')
+            .send({
+                email: users[0].email,
+                password: users[0].password
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toExist();
+            })
+            .end((err, res) => {
+                if (err){
+                    return done(err);
+                }
+
+                // check that x-auth token was pushed into the tokens array in db
+                User.findById(users[0]._id).then((user) => {
+                    // index 1 because new token is pushed
+                    expect(user.tokens[1]).toInclude({ 
+                        access: 'auth',
+                        token: res.headers['x-auth']
+                    });
+                    done();
+                }).catch((e) => done(e));
+            });
+    });
+
+    it('should reject invalid login', (done) => {
+        var email = 'example@example.com';
+        var password = 'abc123';
+
+        request(app)
+            .post('users/login')
+            .send({email, password})
+            .expect(400)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toNotExist();
+            })
+            .end((err, res) => {
+                if (err){
+                    return done(err);
+                }
+
+                User.findById(users[1]._id).then((user) => {
+                    // index 1 because new token is pushed
+                    expect(user.tokens.length).toBe(0);
+                    done();
+                }).catch((e) => done(e));
+            });
     });
 });

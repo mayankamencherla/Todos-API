@@ -57,7 +57,7 @@ UserSchema.methods.generateAuthToken = function (){
     var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
 
     // pushing token into user object
-    user.tokens.push({access,token});
+    user.tokens.push({access, token});
 
     // saving user and returning so that server.js can use this in the chained promise
     // user is returned as res, but token is latched on to promise

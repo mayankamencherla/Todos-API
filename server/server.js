@@ -122,7 +122,7 @@ app.post('/users', (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
     var user = new User(body);
 
-    user.save().then((user) => {
+    user.save().then(() => {
         return user.generateAuthToken();
     }).then((token) => {
         res.header('x-auth', token).send(user); // custom header called auth
@@ -140,7 +140,7 @@ app.get('/users/me', authenticate, (req, res) => {
 // authenticate not needed because users signed up already authenticated
 app.post('/users/login', (req, res) =>{
     var body = _.pick(req.body, ['email', 'password']);
-
+    // return an x-auth token when a valid user logs in
     User.findByCredentials(body.email, body.password).then((user) => {
         return user.generateAuthToken().then((token) => {
             res.header('x-auth', token).send(user); // custom header called auth
