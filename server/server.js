@@ -2,19 +2,20 @@
 
 require('./config/config');
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const _ = require('lodash');
+const express        = require('express');
+const bodyParser     = require('body-parser');
+const _              = require('lodash');
 
-const {mongoose} = require('./db/mongoose');
-const {Todo} = require('./models/todo');
-const {User} = require('./models/user');
-const {ObjectID} = require('mongodb');
+const {mongoose}     = require('./db/mongoose');
+const {Todo}         = require('./models/todo');
+const {User}         = require('./models/user');
+const {ObjectID}     = require('mongodb');
 const {authenticate} = require('./middleware/authenticate');
 
 const app = express();
 const port = process.env.PORT; // PORT if on production, 3000 locally
 
+// used to make sure all req.body is a json 
 app.use(bodyParser.json()); // middleware for express
 
 /*----------------------- All todos routes start----------------------------------*/

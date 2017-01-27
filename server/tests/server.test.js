@@ -1,27 +1,14 @@
-const expect = require('expect');
-const request = require('supertest');
-
-const {app} = require('./../server');
-const {Todo} = require('./../models/todo');
-const {ObjectID} = require('mongodb');
-
-const todos = [{
-    _id: new ObjectID(),
-    text: 'First test todo',
-}, {
-    _id: new ObjectID(),
-    text: 'Second test todo',
-    completed: true,
-    completedAt: 333
-}]
+const expect                 = require('expect');
+const request                = require('supertest');
+const {app}                  = require('./../server');
+const {Todo}                 = require('./../models/todo');
+const {ObjectID}             = require('mongodb');
+const {todos, populateTodos} = require('./seed/seed');
+const {users, populateUsers} = require('./seed/seed');
 
 // run before each test case (independent of other test cases)
-beforeEach((done) => {
-    // wipe out all the data and add seed todos
-    Todo.remove({}).then(() => {
-        return Todo.insertMany(todos);
-    }).then(() => done()); 
-});
+beforeEach(populateTodos);
+beforeEach(populateUsers);
 
 // testing /todos
 describe('POST /todos', () => {
@@ -188,4 +175,6 @@ describe('DELETE /todos/:id', () => {
                 .end(done);
         });
     });
+/*----------------------------------User tests---------------------------------*/
+    // describe('')
 });

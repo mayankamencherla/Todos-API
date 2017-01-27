@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
+const mongoose  = require('mongoose');
+const jwt       = require('jsonwebtoken');
 const validator = require('validator');
-const _ = require('lodash');
-const bcrypt = require('bcryptjs');
+const _         = require('lodash');
+const bcrypt    = require('bcryptjs');
 
 /*-----------------------------------------------------------------------------*/
 /* 
