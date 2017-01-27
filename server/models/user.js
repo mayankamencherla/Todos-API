@@ -24,7 +24,7 @@ const bcrypt    = require('bcryptjs');
     password: {
         type: String,
         required: true,
-        minlength: true,
+        minlength: 6,
     },
     // Access tokens for individual users
     tokens: [{
@@ -60,6 +60,7 @@ UserSchema.methods.generateAuthToken = function (){
     user.tokens.push({access,token});
 
     // saving user and returning so that server.js can use this in the chained promise
+    // user is returned as res, but token is latched on to promise
     return user.save().then(() => {
         return token;
     });
