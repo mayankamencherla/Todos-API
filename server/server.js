@@ -21,10 +21,10 @@ app.use(bodyParser.json()); // middleware for express
 
 /*----------------------- All todos routes start----------------------------------*/
 // Create a new todo and save
-app.post('/todos', (req, res) => {
-
+app.post('/todos', authenticate, (req, res) => {
     var todo = new Todo({
-        text: req.body.text
+        text: req.body.text,
+        _creator: req.user._id
     });
 
     todo.save().then((doc) => {
@@ -35,8 +35,10 @@ app.post('/todos', (req, res) => {
 });
 
 // Get all todos
-app.get('/todos', (req, res) => {
-    Todo.find().then((todos) => {
+app.get('/todos', authenticate, (req, res) => {
+    Todo.find({
+        _creator: req.user._id // returns todos user creates
+    }).then((todos) => {
         res.send({todos}); // returning a todos object
     }, (e) => {
         res.status(400).send(e);

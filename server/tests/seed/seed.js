@@ -3,26 +3,6 @@ const {Todo}     = require('./../../models/todo');
 const {User}     = require('./../../models/user');
 const jwt        = require('jsonwebtoken');
 
-/*---------------------------Todos Seed Data------------------------*/
-
-const todos = [{
-    _id: new ObjectID(),
-    text: 'First test todo',
-}, {
-    _id: new ObjectID(),
-    text: 'Second test todo',
-    completed: true,
-    completedAt: 333
-}];
-
-const populateTodos  = (done) => {
-    // wipe out all the data and add seed todos
-    Todo.remove({}).then(() => {
-        return Todo.insertMany(todos);
-    }).then(() => done()); 
-};
-
-/*---------------------------Todos Seed Data------------------------*/
 /*---------------------------User Seed Data------------------------*/
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
@@ -51,6 +31,29 @@ const populateUsers = (done) => {
         // returning multiple promises 
         return Promise.all([userOne, userTwo]);
     }).then(() => done());
+};
+
+/*---------------------------User Seed Data------------------------*/
+
+/*---------------------------Todos Seed Data------------------------*/
+
+const todos = [{
+    _id: new ObjectID(),
+    text: 'First test todo',
+    _creator: userOneId
+}, {
+    _id: new ObjectID(),
+    text: 'Second test todo',
+    completed: true,
+    completedAt: 333,
+    _creator: userTwoId
+}];
+
+const populateTodos  = (done) => {
+    // wipe out all the data and add seed todos
+    Todo.remove({}).then(() => {
+        return Todo.insertMany(todos);
+    }).then(() => done()); 
 };
 
 /*---------------------------Todos Seed Data------------------------*/

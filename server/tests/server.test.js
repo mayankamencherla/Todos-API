@@ -20,6 +20,7 @@ describe('POST /todos', () => {
 
         request(app)
             .post('/todos')
+            .set('x-auth', users[0].tokens[0].token) // creating todo for user 0
             .send({text})
             .expect(200) //status
             .expect((res) => {
@@ -43,6 +44,7 @@ describe('POST /todos', () => {
 
         request(app)
             .post('/todos')
+            .set('x-auth', users[0].tokens[0].token)
             .send({})
             .expect(400) // status
             .end((err, res) => {
@@ -63,9 +65,10 @@ describe('GET /todos', () => {
         // testing for 2 objects in the database after seeding
         request(app)
             .get('/todos')
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect((res) => {
-                expect(res.body.todos.length).toBe(2); // todos.length because this route returns todos : {}
+                expect(res.body.todos.length).toBe(1); // todos.length because this route returns todos : {}
             })
             .end(done);
     });
