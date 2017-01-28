@@ -138,7 +138,7 @@ app.get('/users/me', authenticate, (req, res) => {
 
 // sign in a user, password = hashed password in db
 // authenticate not needed because users signed up already authenticated
-app.post('/users/login', (req, res) =>{
+app.post('/users/login', (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
     // return an x-auth token when a valid user logs in
     User.findByCredentials(body.email, body.password).then((user) => {
@@ -147,6 +147,14 @@ app.post('/users/login', (req, res) =>{
         });
     }).catch((e) => {
         res.status(400).send(e);
+    });
+});
+
+// private route -> logging out user by removing token.
+// token is for each time a user logs in, and should be removed when user logs out
+app.delete('/users/me/token', authenticate, (req, res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send('Token was successfully deleted');
     });
 });
 

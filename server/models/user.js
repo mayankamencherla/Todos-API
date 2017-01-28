@@ -106,7 +106,20 @@ UserSchema.statics.findByCredentials = function(email, password){
             });
         });
     });
-}
+};
+
+// instance method -> remove token from array using $pull
+UserSchema.methods.removeToken = function(token){
+    var user = this;
+
+    // pull out token from tokens array
+    // return for a chained promise
+    return user.update({
+        $pull: {
+            tokens: {token}
+        }
+    });
+};
 
 // Adding a save event before we save the doc to the database
 // Need next , and need to call it inside the function
