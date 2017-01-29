@@ -5,5 +5,9 @@ Todos API is a simple and easy to use API with the following features:
 3. Update todos based on id
 4. Delete todos based on id 
 
-To run the API locally, 
-node server/server.js
+# To run the API locally:
+1. Set up config.json in /server/config/ to contain PORT, MONGODB_URI and JWT_SECRET
+2. npm install to install all dependencies
+3. Run node server/server.js
+
+# To 
